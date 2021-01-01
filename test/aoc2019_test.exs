@@ -24,4 +24,12 @@ defmodule Aoc2019Test do
   test "Day 3, Part 2: Find shortest delay to intersection" do
     assert Day03.find_min_delay() == 21196
   end
+
+  test "Day 4, Part 1: Count valid passwords" do
+    assert Day04.count_valid_passwords_1() == 1063
+  end
+
+  test "Day 4, Part 2: Count valid passwords" do
+    assert Day04.count_valid_passwords_2() == 686
+  end
 end
