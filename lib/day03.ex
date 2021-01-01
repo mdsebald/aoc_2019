@@ -81,26 +81,38 @@ defmodule Day03 do
     plot_wire_path(rem_runs, coords, last_coord)
   end
 
-  defp gen_wire_path_x(coords, {start_x, y}, length) do
-    last_x = start_x + length
+  defp gen_wire_path_x(coords, {last_x, last_y}, length) do
+    start_x =
+      cond do
+        length < 0 -> last_x - 1
+        length > 0 -> last_x + 1
+      end
+
+    last_x = last_x + length
 
     coords =
       Enum.reduce(start_x..last_x, coords, fn x, next_coords ->
-        MapSet.put(next_coords, {x, y})
+        MapSet.put(next_coords, {x, last_y})
       end)
 
-    {coords, {last_x, y}}
+    {coords, {last_x, last_y}}
   end
 
-  defp gen_wire_path_y(coords, {x, start_y}, length) do
-    last_y = start_y + length
+  defp gen_wire_path_y(coords, {last_x, last_y}, length) do
+    start_y =
+      cond do
+        length < 0 -> last_y - 1
+        length > 0 -> last_y + 1
+      end
+
+    last_y = last_y + length
 
     coords =
       Enum.reduce(start_y..last_y, coords, fn y, next_coords ->
-        MapSet.put(next_coords, {x, y})
+        MapSet.put(next_coords, {last_x, y})
       end)
 
-    {coords, {x, last_y}}
+    {coords, {last_x, last_y}}
   end
 
   defp dist_to_closest_intersect(wire1_path, wire2_path) do
