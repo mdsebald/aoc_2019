@@ -32,4 +32,12 @@ defmodule Aoc2019Test do
   test "Day 4, Part 2: Count valid passwords" do
     assert Day04.count_valid_passwords_2() == 686
   end
+
+  test "Day 5, Part 1: AC system diagnostic code" do
+    assert Day05.get_diagnostic_code_ac() == 2_845_163
+  end
+
+  test "Day 5, Part 2: Thermal Radiator system diagnostic code" do
+    assert Day05.get_diagnostic_code_tr() == 9_436_229
+  end
 end
