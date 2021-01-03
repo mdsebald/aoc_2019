@@ -6,6 +6,16 @@ defmodule Day02 do
   @doc """
   --- Part One ---
 
+  On the way to your gravity assist around the Moon, your ship computer beeps
+  angrily about a "1202 program alarm". On the radio, an Elf is already
+  explaining how to handle the situation: "Don't worry, that's perfectly
+  norma--" The ship computer bursts into flames.
+
+  You notify the Elves that the computer's magic smoke seems to have escaped.
+  "That computer ran Intcode programs like the gravity assist program it was
+  working on; surely there are enough spare parts up there to build a new
+  Intcode computer!"
+
   An Intcode program is a list of integers separated by commas (like
   1,0,0,3,99). To run one, start by looking at the first integer (called
   position 0). Here, you will find an opcode - either 1, 2, or 99. The opcode
@@ -80,6 +90,8 @@ defmodule Day02 do
   just before the last computer caught fire. To do this, before running the
   program, replace position 1 with the value 12 and replace position 2 with
   the value 2. What value is left at position 0 after the program halts?
+
+  Your puzzle answer was 3085697.
   """
 
   def run_program_1 do
@@ -90,6 +102,15 @@ defmodule Day02 do
 
   @doc """
   --- Part Two ---
+
+  "Good, the new computer seems to be working correctly! Keep it nearby
+  during this mission - you'll probably use it again. Real Intcode computers
+  support many more features than your new one, but we'll let you know what
+  they are as you need them."
+
+  "However, your current priority should be to complete your gravity assist
+  around the Moon. For this mission to succeed, we should settle on some
+  terminology for the parts you've already built."
 
   Intcode programs are given as a list of integers; these values are used as
   the initial state for the computer's memory. When you run an Intcode
@@ -128,6 +149,8 @@ defmodule Day02 do
   Find the input noun and verb that cause the program to produce the output
   19690720. What is 100 * noun + verb? (For example, if noun=12 and verb=2,
   the answer would be 1202.)
+
+  Your puzzle answer was 9425.
   """
 
   def find_noun_verb do

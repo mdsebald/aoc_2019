@@ -27,6 +27,8 @@ defmodule Day04 do
   meet these criteria?
 
   Your puzzle input is 246540-787419.
+
+  Your puzzle answer was 1063.
   """
 
   def count_valid_passwords_1 do
@@ -67,6 +69,8 @@ defmodule Day04 do
 
   How many different passwords within the range given in your puzzle input
   meet all of the criteria?
+
+  Your puzzle answer was 686.
   """
 
   def count_valid_passwords_2 do

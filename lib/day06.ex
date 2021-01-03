@@ -74,6 +74,8 @@ defmodule Day06 do
   The total number of direct and indirect orbits in this example is 42.
 
   What is the total number of direct and indirect orbits in your map data?
+
+  Your puzzle answer was 204521.
   """
 
   def total_orbits do
@@ -145,6 +147,8 @@ defmodule Day06 do
   What is the minimum number of orbital transfers required to move from the
   object YOU are orbiting to the object SAN is orbiting? (Between the objects
   they are orbiting - not between YOU and SAN.)
+
+  Your puzzle answer was 307.
   """
 
   def min_orbit_transfers do

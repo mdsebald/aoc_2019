@@ -101,6 +101,8 @@ defmodule Day05 do
 
   After providing 1 to the only input instruction and passing all the tests,
   what diagnostic code does the program produce?
+
+  Your puzzle answer was 2845163.
   """
 
   def get_diagnostic_code_ac do
@@ -179,6 +181,8 @@ defmodule Day05 do
   number, the diagnostic code.
 
   What is the diagnostic code for system ID 5?
+
+  Your puzzle answer was 9436229.
   """
 
   def get_diagnostic_code_tr do

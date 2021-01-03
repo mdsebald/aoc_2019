@@ -62,6 +62,8 @@ defmodule Day03 do
 
   What is the Manhattan distance from the central port to the closest
   intersection?
+
+  Your puzzle answer was 207.
   """
 
   def find_closest_intersect do
@@ -172,6 +174,8 @@ defmodule Day03 do
 
   What is the fewest combined steps the wires must take to reach an
   intersection?
+
+  Your puzzle answer was 21196.
   """
 
   def find_min_delay do
