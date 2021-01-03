@@ -77,7 +77,6 @@ defmodule Day06 do
   """
 
   def total_orbits do
-    # "inputs/day06_test1_input.txt")
     get_orbits_map()
     |> orbit_count()
   end
@@ -149,7 +148,6 @@ defmodule Day06 do
   """
 
   def min_orbit_transfers do
-    # "inputs/day06_test2_input.txt")
     get_orbits_map()
     |> get_YOU_to_SAN()
   end
