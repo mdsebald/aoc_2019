@@ -40,4 +40,12 @@ defmodule Aoc2019Test do
   test "Day 5, Part 2: Thermal Radiator system diagnostic code" do
     assert Day05.get_diagnostic_code_tr() == 9_436_229
   end
+
+  test "Day 6, Part 1: Total direct and indirect orbits" do
+    assert Day06.total_orbits() == 204_521
+  end
+
+  test "Day 6, Part 2: Min orbital transfers between YOU and SAN" do
+    assert Day06.min_orbit_transfers() == 307
+  end
 end
