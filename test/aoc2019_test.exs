@@ -48,4 +48,12 @@ defmodule Aoc2019Test do
   test "Day 6, Part 2: Min orbital transfers between YOU and SAN" do
     assert Day06.min_orbit_transfers() == 307
   end
+
+  test "Day 7, Part 1: Find highest amplifier thrust signal" do
+    assert Day07.highest_signal_1() == 277_328
+  end
+
+  test "Day 7, Part 2: Find highest amplifier thrust signal" do
+    assert Day07.highest_signal_2() == 11_304_734
+  end
 end

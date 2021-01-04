@@ -4,7 +4,7 @@ defmodule Intcode do
   """
 
   # op codes
-  @add  1
+  @add 1
   @mult 2
   @input 3
   @output 4
@@ -14,14 +14,12 @@ defmodule Intcode do
   @equals 8
   @halt 99
 
-  defstruct [
-    code: [],
-    ip: 0,
-    inputs: [],
-    outputs: [],
-    ret_output: false,
-    halted: false
-  ]
+  defstruct code: [],
+            ip: 0,
+            inputs: [],
+            outputs: [],
+            ret_output: false,
+            halted: false
 
   def run(program) do
     code = program.code
@@ -40,7 +38,7 @@ defmodule Intcode do
     {_addr2, opr2} = get_addr_op(code, ip + 2, mode2)
     {addr3, _opr3} = get_addr_op(code, ip + 3, mode3)
 
-    #IO.puts("ip: #{ip}, instr: #{instr}, addr1: #{addr1}, opr1: #{opr1}, opr2: #{opr2}, addr3: #{addr3}")
+    # IO.puts("ip: #{ip}, instr: #{instr}, addr1: #{addr1}, opr1: #{opr1}, opr2: #{opr2}, addr3: #{addr3}")
 
     case instr do
       @add ->
@@ -53,11 +51,12 @@ defmodule Intcode do
 
       @input ->
         [inputs | rem_inputs] = program.inputs
-        code  = store(code, addr1, inputs)
+        code = store(code, addr1, inputs)
         run(%Intcode{program | code: code, ip: ip + 2, inputs: rem_inputs})
 
       @output ->
         program = %Intcode{program | ip: ip + 2, outputs: [opr1 | program.outputs]}
+
         if program.ret_output do
           program
         else
