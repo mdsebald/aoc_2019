@@ -95,9 +95,9 @@ defmodule Day02 do
   """
 
   def run_program_1 do
-    get_program()
-    |> run_program(0)
-    |> Enum.at(0)
+    Intcode.run(%Intcode{code: get_code()})
+    |> Map.get(:outputs)
+    |> hd()
   end
 
   @doc """
@@ -154,63 +154,37 @@ defmodule Day02 do
   """
 
   def find_noun_verb do
-    get_program()
+    get_code()
     |> run_prog_combo(0, 0)
   end
 
-  defp run_prog_combo(org_prog, noun, verb) do
-    prog =
-      List.replace_at(org_prog, 1, noun)
+  defp run_prog_combo(org_code, noun, verb) do
+    code =
+      List.replace_at(org_code, 1, noun)
       |> List.replace_at(2, verb)
-      |> run_program(0)
 
-    if Enum.at(prog, 0) == 19_690_720 do
-      100 * Enum.at(prog, 1) + Enum.at(prog, 2)
+    program = Intcode.run(%Intcode{code: code})
+
+    if Enum.at(program.code, 0) == 19_690_720 do
+      100 * Enum.at(program.code, 1) + Enum.at(program.code, 2)
     else
       verb = verb + 1
 
       if verb == 100 do
-        run_prog_combo(org_prog, noun + 1, 0)
+        run_prog_combo(org_code, noun + 1, 0)
       else
-        run_prog_combo(org_prog, noun, verb)
+        run_prog_combo(org_code, noun, verb)
       end
     end
   end
 
   # common functions
 
-  defp get_program(input \\ "inputs/day02_input.txt") do
+  defp get_code(input \\ "inputs/day02_input.txt") do
     File.read!(input)
     |> String.split(",")
     |> Enum.map(&String.to_integer/1)
     |> List.replace_at(1, 12)
     |> List.replace_at(2, 2)
-  end
-
-  defp run_program(prog, pc) do
-    case Enum.at(prog, pc) do
-      99 ->
-        prog
-
-      1 ->
-        addr1 = Enum.at(prog, pc + 1)
-        op1 = Enum.at(prog, addr1)
-        addr2 = Enum.at(prog, pc + 2)
-        op2 = Enum.at(prog, addr2)
-        sum = op1 + op2
-        addr3 = Enum.at(prog, pc + 3)
-        prog = List.replace_at(prog, addr3, sum)
-        run_program(prog, pc + 4)
-
-      2 ->
-        addr1 = Enum.at(prog, pc + 1)
-        op1 = Enum.at(prog, addr1)
-        addr2 = Enum.at(prog, pc + 2)
-        op2 = Enum.at(prog, addr2)
-        prod = op1 * op2
-        addr3 = Enum.at(prog, pc + 3)
-        prog = List.replace_at(prog, addr3, prod)
-        run_program(prog, pc + 4)
-    end
   end
 end

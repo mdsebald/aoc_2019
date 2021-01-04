@@ -106,8 +106,9 @@ defmodule Day05 do
   """
 
   def get_diagnostic_code_ac do
-    get_program()
-    |> run_program(0, 1, [])
+    %Intcode{code: get_code(), inputs: [1]}
+    |> Intcode.run()
+    |> Map.get(:outputs)
     |> hd()
   end
 
@@ -186,113 +187,17 @@ defmodule Day05 do
   """
 
   def get_diagnostic_code_tr do
-    get_program()
-    |> run_program(0, 5, [])
+    %Intcode{code: get_code(), inputs: [5]}
+    |> Intcode.run()
+    |> Map.get(:outputs)
     |> hd()
   end
 
   # common functions
 
-  defp get_program(input \\ "inputs/day05_input.txt") do
+  defp get_code(input \\ "inputs/day05_input.txt") do
     File.read!(input)
     |> String.split(",")
     |> Enum.map(&String.to_integer/1)
-  end
-
-  defp run_program(prog, ip, input, output) do
-    mode_instr = Enum.at(prog, ip)
-    instr = rem(mode_instr, 100)
-    modes = div(mode_instr, 100)
-    mode1 = rem(modes, 10)
-    modes = div(modes, 10)
-    mode2 = rem(modes, 10)
-    modes = div(modes, 10)
-    mode3 = rem(modes, 10)
-
-    {addr1, opr1} = get_addr_op(prog, ip + 1, mode1)
-    {_addr2, opr2} = get_addr_op(prog, ip + 2, mode2)
-    {addr3, _opr3} = get_addr_op(prog, ip + 3, mode3)
-
-    case instr do
-      99 ->
-        # halt
-        output
-
-      1 ->
-        # add
-        prog = store(prog, addr3, opr1 + opr2)
-        run_program(prog, ip + 4, input, output)
-
-      2 ->
-        # multiply
-        prog = store(prog, addr3, opr1 * opr2)
-        run_program(prog, ip + 4, input, output)
-
-      3 ->
-        # input
-        prog = store(prog, addr1, input)
-        run_program(prog, ip + 2, input, output)
-
-      4 ->
-        # output
-        run_program(prog, ip + 2, input, [opr1 | output])
-
-      5 ->
-        # jump-if-true
-        if opr1 != 0 do
-          run_program(prog, opr2, input, output)
-        else
-          run_program(prog, ip + 3, input, output)
-        end
-
-      6 ->
-        # jump-if-false
-        if opr1 == 0 do
-          run_program(prog, opr2, input, output)
-        else
-          run_program(prog, ip + 3, input, output)
-        end
-
-      7 ->
-        # less than
-        prog =
-          if opr1 < opr2 do
-            store(prog, addr3, 1)
-          else
-            store(prog, addr3, 0)
-          end
-
-        run_program(prog, ip + 4, input, output)
-
-      8 ->
-        prog =
-          if opr1 == opr2 do
-            store(prog, addr3, 1)
-          else
-            store(prog, addr3, 0)
-          end
-
-        run_program(prog, ip + 4, input, output)
-    end
-  end
-
-  defp store(prog, addr, val) do
-    List.replace_at(prog, addr, val)
-  end
-
-  # positional mode
-  defp get_addr_op(prog, ip, 0) do
-    addr = Enum.at(prog, ip)
-
-    if addr != nil do
-      {addr, Enum.at(prog, addr)}
-    else
-      {nil, nil}
-    end
-  end
-
-  # immediate mode
-  defp get_addr_op(prog, ip, 1) do
-    {0, Enum.at(prog, ip)}
   end
 end
