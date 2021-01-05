@@ -56,4 +56,12 @@ defmodule Aoc2019Test do
   test "Day 7, Part 2: Find highest amplifier thrust signal" do
     assert Day07.highest_signal_2() == 11_304_734
   end
+
+  test "Day 8, Part 1: Find image layer with fewest 0 digits" do
+    assert Day08.process_image_1() == 2520
+  end
+
+  test "Day 8, Part 2: Find BIOS password in image" do
+    assert Day08.decode_image() == "LEGJY"
+  end
 end
