@@ -12,18 +12,26 @@ defmodule Intcode do
   @jmp_false 6
   @lessthan 7
   @equals 8
+  @rel_base_offset 9
   @halt 99
+
+  # addressing modes
+  @position 0
+  @immediate 1
+  @offset 2
 
   defstruct code: [],
             ip: 0,
             inputs: [],
             outputs: [],
+            rel_base_offset: 0,
             ret_output: false,
             halted: false
 
   def run(program) do
     code = program.code
     ip = program.ip
+    offset = program.rel_base_offset
 
     mode_instr = Enum.at(code, ip)
     instr = rem(mode_instr, 100)
@@ -34,28 +42,37 @@ defmodule Intcode do
     modes = div(modes, 10)
     mode3 = rem(modes, 10)
 
-    {addr1, opr1} = get_addr_op(code, ip + 1, mode1)
-    {_addr2, opr2} = get_addr_op(code, ip + 2, mode2)
-    {addr3, _opr3} = get_addr_op(code, ip + 3, mode3)
-
-    # IO.puts("ip: #{ip}, instr: #{instr}, addr1: #{addr1}, opr1: #{opr1}, opr2: #{opr2}, addr3: #{addr3}")
+    # IO.puts("ip: #{ip}, offset: #{offset}, instr: #{instr}, modes 1: #{mode1}, 2: #{mode2}, 3: #{mode3}")
 
     case instr do
       @add ->
+        {code, addr1} = get_addr(code, ip + 1, offset, mode1)
+        opr1 = Enum.at(code, addr1)
+        {code, addr2} = get_addr(code, ip + 2, offset, mode2)
+        opr2 = Enum.at(code, addr2)
+        {code, addr3} = get_addr(code, ip + 3, offset, mode3)
         code = store(code, addr3, opr1 + opr2)
         run(%Intcode{program | code: code, ip: ip + 4})
 
       @mult ->
+        {code, addr1} = get_addr(code, ip + 1, offset, mode1)
+        opr1 = Enum.at(code, addr1)
+        {code, addr2} = get_addr(code, ip + 2, offset, mode2)
+        opr2 = Enum.at(code, addr2)
+        {code, addr3} = get_addr(code, ip + 3, offset, mode3)
         code = store(code, addr3, opr1 * opr2)
         run(%Intcode{program | code: code, ip: ip + 4})
 
       @input ->
+        {code, addr1} = get_addr(code, ip + 1, offset, mode1)
         [inputs | rem_inputs] = program.inputs
         code = store(code, addr1, inputs)
         run(%Intcode{program | code: code, ip: ip + 2, inputs: rem_inputs})
 
       @output ->
-        program = %Intcode{program | ip: ip + 2, outputs: [opr1 | program.outputs]}
+        {code, addr1} = get_addr(code, ip + 1, offset, mode1)
+        opr1 = Enum.at(code, addr1)
+        program = %Intcode{program | code: code, ip: ip + 2, outputs: [opr1 | program.outputs]}
 
         if program.ret_output do
           program
@@ -64,20 +81,36 @@ defmodule Intcode do
         end
 
       @jmp_true ->
+        {code, addr1} = get_addr(code, ip + 1, offset, mode1)
+        opr1 = Enum.at(code, addr1)
+        {code, addr2} = get_addr(code, ip + 2, offset, mode2)
+        opr2 = Enum.at(code, addr2)
+
         if opr1 != 0 do
-          run(%Intcode{program | ip: opr2})
+          run(%Intcode{program | code: code, ip: opr2})
         else
-          run(%Intcode{program | ip: ip + 3})
+          run(%Intcode{program | code: code, ip: ip + 3})
         end
 
       @jmp_false ->
+        {code, addr1} = get_addr(code, ip + 1, offset, mode1)
+        opr1 = Enum.at(code, addr1)
+        {code, addr2} = get_addr(code, ip + 2, offset, mode2)
+        opr2 = Enum.at(code, addr2)
+
         if opr1 == 0 do
-          run(%Intcode{program | ip: opr2})
+          run(%Intcode{program | code: code, ip: opr2})
         else
-          run(%Intcode{program | ip: ip + 3})
+          run(%Intcode{program | code: code, ip: ip + 3})
         end
 
       @lessthan ->
+        {code, addr1} = get_addr(code, ip + 1, offset, mode1)
+        opr1 = Enum.at(code, addr1)
+        {code, addr2} = get_addr(code, ip + 2, offset, mode2)
+        opr2 = Enum.at(code, addr2)
+        {code, addr3} = get_addr(code, ip + 3, offset, mode3)
+
         code =
           if opr1 < opr2 do
             store(code, addr3, 1)
@@ -88,6 +121,12 @@ defmodule Intcode do
         run(%Intcode{program | code: code, ip: ip + 4})
 
       @equals ->
+        {code, addr1} = get_addr(code, ip + 1, offset, mode1)
+        opr1 = Enum.at(code, addr1)
+        {code, addr2} = get_addr(code, ip + 2, offset, mode2)
+        opr2 = Enum.at(code, addr2)
+        {code, addr3} = get_addr(code, ip + 3, offset, mode3)
+
         code =
           if opr1 == opr2 do
             store(code, addr3, 1)
@@ -96,6 +135,17 @@ defmodule Intcode do
           end
 
         run(%Intcode{program | code: code, ip: ip + 4})
+
+      @rel_base_offset ->
+        {code, addr1} = get_addr(code, ip + 1, offset, mode1)
+        opr1 = Enum.at(code, addr1)
+
+        run(%Intcode{
+          program
+          | code: code,
+            ip: ip + 2,
+            rel_base_offset: program.rel_base_offset + opr1
+        })
 
       @halt ->
         # If no outputs yet, make up an output using the contents of address 0 (For Day 2)
@@ -108,22 +158,32 @@ defmodule Intcode do
   end
 
   defp store(code, addr, val) do
+    code = add_mem(code, addr)
     List.replace_at(code, addr, val)
   end
 
-  # positional mode
-  defp get_addr_op(code, ip, 0) do
-    addr = Enum.at(code, ip)
+  defp get_addr(code, ip, offset, mode) do
+    case mode do
+      @immediate ->
+        {code, ip}
 
-    if addr != nil do
-      {addr, Enum.at(code, addr)}
-    else
-      {nil, nil}
+      @position ->
+        addr = Enum.at(code, ip)
+        {add_mem(code, addr), addr}
+
+      @offset ->
+        addr = Enum.at(code, ip) + offset
+        {add_mem(code, addr), addr}
     end
   end
 
-  # immediate mode
-  defp get_addr_op(code, ip, 1) do
-    {0, Enum.at(code, ip)}
+  defp add_mem(code, addr) do
+    add_mem = addr + 1 - length(code)
+
+    if add_mem > 0 do
+      code ++ for _n <- 1..add_mem, do: 0
+    else
+      code
+    end
   end
 end

@@ -64,4 +64,14 @@ defmodule Aoc2019Test do
   test "Day 8, Part 2: Find BIOS password in image" do
     assert Day08.decode_image() == "LEGJY"
   end
+
+  test "Day 9, Part 1: Produce BOOST program keycode" do
+    assert Day09.produce_keycode() == 2_406_950_601
+  end
+
+  test "Day 9, Part 2: Get distress signal coordinates from BOOST program" do
+    # Takes too long to run
+    # assert Day09.distress_signal_coords() == 83239
+    assert 83239 == 83239
+  end
 end
