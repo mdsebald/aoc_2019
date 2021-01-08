@@ -73,34 +73,32 @@ defmodule Day09 do
   """
 
   def produce_keycode do
-    code = get_code()
-
-    Intcode.run(%Intcode{code: code, inputs: [1]})
-    |> Map.get(:outputs)
-    |> hd()
+    get_code()
+    |> Intcode.new()
+    |> Intcode.run_input(1)
+    |> Intcode.get_output()
   end
 
   def test1_1 do
-    code = get_code("inputs/day09_test1_1_input.txt")
-
-    Intcode.run(%Intcode{code: code})
+    get_code("inputs/day09_test1_1_input.txt")
+    |> Intcode.new(ret_output: false)
+    |> Intcode.run()
     |> Map.get(:outputs)
+    |> Enum.reverse()
   end
 
   def test1_2 do
-    code = get_code("inputs/day09_test1_2_input.txt")
-
-    Intcode.run(%Intcode{code: code})
-    |> Map.get(:outputs)
-    |> hd()
+    get_code("inputs/day09_test1_2_input.txt")
+    |> Intcode.new()
+    |> Intcode.run()
+    |> Intcode.get_output()
   end
 
   def test1_3 do
-    code = get_code("inputs/day09_test1_3_input.txt")
-
-    Intcode.run(%Intcode{code: code})
-    |> Map.get(:outputs)
-    |> hd()
+    get_code("inputs/day09_test1_3_input.txt")
+    |> Intcode.new()
+    |> Intcode.run()
+    |> Intcode.get_output()
   end
 
   @doc """
@@ -125,11 +123,10 @@ defmodule Day09 do
 
   # Takes about 20 sec. on my hardware
   def distress_signal_coords do
-    code = get_code()
-
-    Intcode.run(%Intcode{code: code, inputs: [2]})
-    |> Map.get(:outputs)
-    |> hd()
+    get_code()
+    |> Intcode.new()
+    |> Intcode.run_input(2)
+    |> Intcode.get_output()
   end
 
   # common functions

@@ -106,10 +106,10 @@ defmodule Day05 do
   """
 
   def get_diagnostic_code_ac do
-    %Intcode{code: get_code(), inputs: [1]}
-    |> Intcode.run()
-    |> Map.get(:outputs)
-    |> hd()
+    get_code()
+    |> Intcode.new(ret_output: false)
+    |> Intcode.run_input(1)
+    |> Intcode.get_output()
   end
 
   @doc """
@@ -187,10 +187,10 @@ defmodule Day05 do
   """
 
   def get_diagnostic_code_tr do
-    %Intcode{code: get_code(), inputs: [5]}
-    |> Intcode.run()
-    |> Map.get(:outputs)
-    |> hd()
+    get_code()
+    |> Intcode.new(ret_output: false)
+    |> Intcode.run_input(5)
+    |> Intcode.get_output()
   end
 
   # common functions

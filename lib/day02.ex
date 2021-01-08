@@ -95,9 +95,10 @@ defmodule Day02 do
   """
 
   def run_program_1 do
-    Intcode.run(%Intcode{code: get_code()})
-    |> Map.get(:outputs)
-    |> hd()
+    get_code()
+    |> Intcode.new()
+    |> Intcode.run()
+    |> Intcode.get_output()
   end
 
   @doc """
@@ -163,7 +164,9 @@ defmodule Day02 do
       List.replace_at(org_code, 1, noun)
       |> List.replace_at(2, verb)
 
-    program = Intcode.run(%Intcode{code: code})
+    program =
+      Intcode.new(code)
+      |> Intcode.run()
 
     if Enum.at(program.code, 0) == 19_690_720 do
       100 * Enum.at(program.code, 1) + Enum.at(program.code, 2)

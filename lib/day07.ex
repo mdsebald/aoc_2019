@@ -121,9 +121,9 @@ defmodule Day07 do
 
   defp run_amps(code, [phase | phases], input) do
     output =
-      Intcode.run(%Intcode{code: code, inputs: [phase, input]})
-      |> Map.get(:outputs)
-      |> hd()
+      Intcode.new(code)
+      |> Intcode.run_inputs([phase, input])
+      |> Intcode.get_output()
 
     run_amps(code, phases, output)
   end
@@ -214,48 +214,38 @@ defmodule Day07 do
   end
 
   defp init_run_amps(code, phases) do
-    amp_a = Intcode.run(%Intcode{code: code, ret_output: true, inputs: [Enum.at(phases, 0), 0]})
+    amp_a =
+      Intcode.new(code)
+      |> Intcode.run_inputs([Enum.at(phases, 0), 0])
 
     amp_b =
-      Intcode.run(%Intcode{
-        code: code,
-        ret_output: true,
-        inputs: [Enum.at(phases, 1), hd(amp_a.outputs)]
-      })
+      Intcode.new(code)
+      |> Intcode.run_inputs([Enum.at(phases, 1), Intcode.get_output(amp_a)])
 
     amp_c =
-      Intcode.run(%Intcode{
-        code: code,
-        ret_output: true,
-        inputs: [Enum.at(phases, 2), hd(amp_b.outputs)]
-      })
+      Intcode.new(code)
+      |> Intcode.run_inputs([Enum.at(phases, 2), Intcode.get_output(amp_b)])
 
     amp_d =
-      Intcode.run(%Intcode{
-        code: code,
-        ret_output: true,
-        inputs: [Enum.at(phases, 3), hd(amp_c.outputs)]
-      })
+      Intcode.new(code)
+      |> Intcode.run_inputs([Enum.at(phases, 3), Intcode.get_output(amp_c)])
 
     amp_e =
-      Intcode.run(%Intcode{
-        code: code,
-        ret_output: true,
-        inputs: [Enum.at(phases, 4), hd(amp_d.outputs)]
-      })
+      Intcode.new(code)
+      |> Intcode.run_inputs([Enum.at(phases, 4), Intcode.get_output(amp_d)])
 
     run_amps_rec(amp_a, amp_b, amp_c, amp_d, amp_e)
   end
 
   defp run_amps_rec(amp_a, amp_b, amp_c, amp_d, amp_e) do
-    amp_a = Intcode.run(%Intcode{amp_a | inputs: amp_e.outputs})
-    amp_b = Intcode.run(%Intcode{amp_b | inputs: amp_a.outputs})
-    amp_c = Intcode.run(%Intcode{amp_c | inputs: amp_b.outputs})
-    amp_d = Intcode.run(%Intcode{amp_d | inputs: amp_c.outputs})
-    amp_e = Intcode.run(%Intcode{amp_e | inputs: amp_d.outputs})
+    amp_a = Intcode.run_input(amp_a, Intcode.get_output(amp_e))
+    amp_b = Intcode.run_input(amp_b, Intcode.get_output(amp_a))
+    amp_c = Intcode.run_input(amp_c, Intcode.get_output(amp_b))
+    amp_d = Intcode.run_input(amp_d, Intcode.get_output(amp_c))
+    amp_e = Intcode.run_input(amp_e, Intcode.get_output(amp_d))
 
-    if amp_e.halted do
-      hd(amp_e.outputs)
+    if Intcode.halted?(amp_e) do
+      Intcode.get_output(amp_e)
     else
       run_amps_rec(amp_a, amp_b, amp_c, amp_d, amp_e)
     end
