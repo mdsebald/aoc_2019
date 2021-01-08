@@ -74,4 +74,20 @@ defmodule Aoc2019Test do
     # assert Day09.distress_signal_coords() == 83239
     assert 83239 == 83239
   end
+
+  test "Day 10, Part 1: Find best astroid" do
+    assert Day10.most_astroids_detected() == 329
+  end
+
+  test "Day 10, Part 2: 200th Astroid vaporized" do
+    assert Day10.vaporize_200_astroids() == 512
+  end
+
+  test "Day 11, Part 1: Quantity of painted panels visited at least once" do
+    assert Day11.paint_spaceship() == 2160
+  end
+
+  test "Day 11, Part 2: Find the registration ID" do
+    assert Day11.registration_id() == "LRZECGFE"
+  end
 end
