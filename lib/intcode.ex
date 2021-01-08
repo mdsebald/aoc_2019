@@ -25,8 +25,28 @@ defmodule Intcode do
             inputs: [],
             outputs: [],
             rel_base_offset: 0,
-            ret_output: false,
+            ret_output: true,
             halted: false
+
+  def new(code, opts \\ []) do
+    ret_output = Keyword.get(opts, :ret_output, true)
+    inputs = Keyword.get(opts, :inputs, [])
+    %Intcode{code: code, ret_output: ret_output, inputs: inputs}
+  end
+
+  def get_output(program) do
+    hd(program.outputs)
+  end
+
+  def run_inputs(program, inputs) do
+    run(%Intcode{program | inputs: inputs})
+  end
+
+  def run_input(program, input) do
+    run(%Intcode{program | inputs: [input]})
+  end
+
+  def halted?(program), do: program.halted
 
   def run(program) do
     code = program.code
