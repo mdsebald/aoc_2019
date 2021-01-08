@@ -121,6 +121,9 @@ defmodule Day08 do
   """
 
   def decode_image do
+    # Make the unit test output prettier
+    IO.puts("")
+
     get_image()
     # Each image layer is (25 * 6) 150 pixels long
     |> find_visible_pixels(0, [])
