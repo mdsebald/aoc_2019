@@ -90,4 +90,12 @@ defmodule Aoc2019Test do
   test "Day 11, Part 2: Find the registration ID" do
     assert Day11.registration_id() == "LRZECGFE"
   end
+
+  test "Day 12, Part 1: Total energy" do
+    assert Day12.total_energy() == 9441
+  end
+
+  test "Day 12, Part 2: Steps to match previous state" do
+    assert Day12.matching_state() == 503_560_201_099_704
+  end
 end
