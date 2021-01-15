@@ -34,8 +34,8 @@ defmodule Intcode do
     %Intcode{code: code, ret_output: ret_output, inputs: inputs}
   end
 
-  def get_output(program) do
-    hd(program.outputs)
+  def set_addr(program, addr, val) do
+    %Intcode{program | code: List.replace_at(program.code, addr, val)}
   end
 
   def run_inputs(program, inputs) do
@@ -44,6 +44,21 @@ defmodule Intcode do
 
   def run_input(program, input) do
     run(%Intcode{program | inputs: [input]})
+  end
+
+  # get the current inputs queue
+  def get_inputs(program) do
+    program.inputs
+  end
+
+  # return the latest output
+  def get_output(program), do: hd(program.outputs)
+
+  # return outputs in order, oldest first
+  def get_outputs(program), do: Enum.reverse(program.outputs)
+
+  def clear_outputs(program) do
+    Map.put(program, :outputs, [])
   end
 
   def halted?(program), do: program.halted
@@ -85,8 +100,8 @@ defmodule Intcode do
 
       @input ->
         {code, addr1} = get_addr(code, ip + 1, offset, mode1)
-        [inputs | rem_inputs] = program.inputs
-        code = store(code, addr1, inputs)
+        [input | rem_inputs] = program.inputs
+        code = store(code, addr1, input)
         run(%Intcode{program | code: code, ip: ip + 2, inputs: rem_inputs})
 
       @output ->
