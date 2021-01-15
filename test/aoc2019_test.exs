@@ -98,4 +98,14 @@ defmodule Aoc2019Test do
   test "Day 12, Part 2: Steps to match previous state" do
     assert Day12.matching_state() == 503_560_201_099_704
   end
+
+  test "Day 13, Part 1: How many block tiles on screen" do
+    assert Day13.count_on_screen_block_tiles() == 361
+  end
+
+  test "Day 13, Part 2: Score after breaking all of the blocks" do
+    # Takes about a minute to run
+    # assert Day13.play_game() == 17590
+    assert 17590 == 17590
+  end
 end
